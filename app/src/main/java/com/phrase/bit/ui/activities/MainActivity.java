@@ -6,6 +6,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
+import com.nhaarman.listviewanimations.appearance.simple.SwingLeftInAnimationAdapter;
 import com.phrase.bit.PhraseBitApp;
 import com.phrase.bit.R;
 import com.phrase.bit.api.PhraseService;
@@ -47,11 +49,17 @@ public class MainActivity extends AppCompatActivity {
 
         phraseViewModelList = new ArrayList<>();
 
+        /**
+         * Added a smooth animation for the entrance of each phrase
+         */
+
         phraseAdapter = new PhraseAdapter(this, phraseViewModelList);
+        SwingLeftInAnimationAdapter animationAdapter = new SwingLeftInAnimationAdapter(phraseAdapter);
+        animationAdapter.setAbsListView(list);
 
         list.setEmptyView(empty);
 
-        list.setAdapter(phraseAdapter);
+        list.setAdapter(animationAdapter);
 
         phraseService = ((PhraseBitApp) getApplication()).getPhraseService();
 
