@@ -1,7 +1,9 @@
 package com.phrase.bit.ui.activities;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +29,8 @@ import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.swipe_container)
+    SwipeRefreshLayout swipeContainer;
     @BindView(R.id.list)
     ListView list;
     @BindView(R.id.progress_wheel)
@@ -48,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         phraseViewModelList = new ArrayList<>();
 
 
-
         phraseAdapter = new PhraseAdapter(this, phraseViewModelList);
 
         list.setEmptyView(empty);
@@ -56,6 +59,40 @@ public class MainActivity extends AppCompatActivity {
         list.setAdapter(phraseAdapter);
 
         phraseService = ((PhraseBitApp) getApplication()).getPhraseService();
+
+
+        /**
+         * Setting up swipe to refresh functionality in case the request fails and it needs
+         * to be restarted.
+         */
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                phraseViewModelList.clear();
+                phraseAdapter.notifyDataSetChanged();
+                fetchPhrases();
+            }
+        });
+
+        /**
+         * Fixes a bug with pull to refresh where it starts refreshing once the user begins to
+         * scroll up.
+         */
+        list.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                int topRowVerticalPosition =
+                        (list == null || list.getChildCount() == 0) ?
+                                0 : list.getChildAt(0).getTop();
+                swipeContainer.setEnabled(firstVisibleItem == 0 && topRowVerticalPosition >= 0);
+            }
+        });
 
 
         if (Utils.isOnline(this))
@@ -68,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
     * Makes the call to the Phrases API and returns a strongly typed list of the ids of the phrases.
     * */
     public void fetchPhrases() {
+        progressWheel.spin();
         phraseService.GetPhraseIds(new Callback<PhraseListModel>() {
             @Override
             public void success(final PhraseListModel phraseListModel, Response response) {
@@ -93,10 +131,14 @@ public class MainActivity extends AppCompatActivity {
                                 list.smoothScrollToPosition(phraseViewModelList.size());
 
                                 /*
-                                * Stops the spinner when it reaches at the last item of the list.
+                                * Stops the spinner and refresh when it reaches at the last item of the list.
                                 * */
                                 if (phraseListModel.getItems().indexOf(id) == phraseListModel.getItems().size() - 1) {
+
                                     progressWheel.stopSpinning();
+
+                                    if (swipeContainer.isRefreshing())
+                                        swipeContainer.setRefreshing(false);
 
                                 }
                             }
@@ -104,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void failure(RetrofitError error) {
                                 progressWheel.stopSpinning();
+
+                                if (swipeContainer.isRefreshing())
+                                    swipeContainer.setRefreshing(false);
+
                                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
 
                             }
@@ -113,6 +159,9 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     progressWheel.stopSpinning();
 
+                    if (swipeContainer.isRefreshing())
+                        swipeContainer.setRefreshing(false);
+
                     Toast.makeText(MainActivity.this, "Uh Oh! No items are in the list.", Toast.LENGTH_SHORT).show();
                 }
 
@@ -120,6 +169,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
+                progressWheel.stopSpinning();
+
+                if (swipeContainer.isRefreshing())
+                    swipeContainer.setRefreshing(false);
+
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
 
 

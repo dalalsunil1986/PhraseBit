@@ -18,6 +18,8 @@ import butterknife.ButterKnife;
 
 /**
  * Created by Joel on 5/4/2016.
+ * Adapter that generates each view of the list view based on the phrase that's
+ * provided.
  */
 public class PhraseAdapter extends BaseAdapter {
 
@@ -65,6 +67,9 @@ public class PhraseAdapter extends BaseAdapter {
     }
 
 
+    /*Utilizing the view holder pattern so that list cells/items can be recycled.
+    *
+    */
     static class ViewHolder {
         @BindView(R.id.phrase)
         TextView phrase;
