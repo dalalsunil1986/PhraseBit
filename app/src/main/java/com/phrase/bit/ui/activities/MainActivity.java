@@ -3,6 +3,7 @@ package com.phrase.bit.ui.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.phrase.bit.PhraseBitApp;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     ListView list;
     @BindView(R.id.progress_wheel)
     ProgressWheel progressWheel;
+    @BindView(R.id.empty)
+    TextView empty;
 
     private PhraseAdapter phraseAdapter;
     private PhraseService phraseService;
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         phraseViewModelList = new ArrayList<>();
 
         phraseAdapter = new PhraseAdapter(this, phraseViewModelList);
+
+        list.setEmptyView(empty);
 
         list.setAdapter(phraseAdapter);
 
@@ -85,8 +90,10 @@ public class MainActivity extends AppCompatActivity {
                                 phraseAdapter.notifyDataSetChanged();
                                 list.smoothScrollToPosition(phraseViewModelList.size());
 
-                                if(phraseListModel.getItems().indexOf(id)==phraseListModel.getItems().size()-1)
-                                {
+                                /*
+                                * Stops the spinner when it reaches at the last item of the list.
+                                * */
+                                if (phraseListModel.getItems().indexOf(id) == phraseListModel.getItems().size() - 1) {
                                     progressWheel.stopSpinning();
 
                                 }
@@ -95,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void failure(RetrofitError error) {
                                 progressWheel.stopSpinning();
-
                                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
 
                             }
@@ -105,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     progressWheel.stopSpinning();
 
-                    Toast.makeText(MainActivity.this, "No items are in the list", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Uh Oh! No items are in the list.", Toast.LENGTH_SHORT).show();
                 }
 
             }
