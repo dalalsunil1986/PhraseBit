@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                             phraseViewModelList.add(model);
 
                             phraseAdapter.notifyDataSetChanged();
+                            list.smoothScrollToPosition(phraseViewModelList.size());
                         }
 
                         @Override
