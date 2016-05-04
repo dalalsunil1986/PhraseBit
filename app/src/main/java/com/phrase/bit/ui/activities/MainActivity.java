@@ -2,7 +2,6 @@ package com.phrase.bit.ui.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -55,14 +54,21 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "No internet detected", Toast.LENGTH_SHORT).show();
     }
 
+    /*
+    * Makes the call to the Phrases API and returns a strongly typed list of the ids of the phrases.
+    * */
     public void fetchPhrases() {
         phraseService.GetPhraseIds(new Callback<PhraseListModel>() {
             @Override
             public void success(PhraseListModel phraseListModel, Response response) {
 
+                //Checks to ensure the list isn't empty.
                 if (!phraseListModel.getItems().isEmpty()) {
 
 
+                    /*
+                    * Fetches each individual phrase using the download ids from the list.
+                    * */
                     for (String id : phraseListModel.getItems()) {
                         phraseService.GetPhrase(id, new Callback<PhraseRootModel>() {
                             @Override
