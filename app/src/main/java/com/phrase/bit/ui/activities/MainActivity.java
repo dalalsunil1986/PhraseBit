@@ -13,6 +13,7 @@ import com.phrase.bit.api.models.PhraseRootModel;
 import com.phrase.bit.ui.adapters.PhraseAdapter;
 import com.phrase.bit.ui.viewmodels.PhraseViewModel;
 import com.phrase.bit.util.Utils;
+import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.list)
     ListView list;
+    @BindView(R.id.progress_wheel)
+    ProgressWheel progressWheel;
 
     private PhraseAdapter phraseAdapter;
     private PhraseService phraseService;
@@ -60,16 +63,15 @@ public class MainActivity extends AppCompatActivity {
     public void fetchPhrases() {
         phraseService.GetPhraseIds(new Callback<PhraseListModel>() {
             @Override
-            public void success(PhraseListModel phraseListModel, Response response) {
+            public void success(final PhraseListModel phraseListModel, Response response) {
 
                 //Checks to ensure the list isn't empty.
                 if (!phraseListModel.getItems().isEmpty()) {
 
-
                     /*
                     * Fetches each individual phrase using the download ids from the list.
                     * */
-                    for (String id : phraseListModel.getItems()) {
+                    for (final String id : phraseListModel.getItems()) {
                         phraseService.GetPhrase(id, new Callback<PhraseRootModel>() {
                             @Override
                             public void success(PhraseRootModel phraseRootModel, Response response) {
@@ -82,18 +84,28 @@ public class MainActivity extends AppCompatActivity {
 
                                 phraseAdapter.notifyDataSetChanged();
                                 list.smoothScrollToPosition(phraseViewModelList.size());
+
+                                if(phraseListModel.getItems().indexOf(id)==phraseListModel.getItems().size()-1)
+                                {
+                                    progressWheel.stopSpinning();
+
+                                }
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
+                                progressWheel.stopSpinning();
+
                                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+
                             }
                         });
                     }
-                }
-                else
-                {
-                    Toast.makeText(MainActivity.this,"No items are in the list",Toast.LENGTH_SHORT).show();
+
+                } else {
+                    progressWheel.stopSpinning();
+
+                    Toast.makeText(MainActivity.this, "No items are in the list", Toast.LENGTH_SHORT).show();
                 }
 
             }
