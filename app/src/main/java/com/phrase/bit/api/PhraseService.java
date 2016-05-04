@@ -12,7 +12,7 @@ import retrofit.http.GET;
  */
 public interface PhraseService {
 
-    String MAIN_PHRASES = "https://glacial-sands-39825.herokuapp.com";
+    String MAIN_URL = "https://glacial-sands-39825.herokuapp.com";
 
 
     @GET("/")

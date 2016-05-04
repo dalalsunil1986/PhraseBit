@@ -19,7 +19,7 @@ public class PhraseBitApp extends Application {
         RestAdapter restAdapter;
 
             restAdapter = new RestAdapter.Builder()
-                    .setEndpoint(PhraseService.MAIN_PHRASES)
+                    .setEndpoint(PhraseService.MAIN_URL)
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setConverter(new SimpleXMLConverter())
                     .build();
