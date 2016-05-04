@@ -3,6 +3,7 @@ package com.phrase.bit.ui.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.phrase.bit.PhraseBitApp;
 import com.phrase.bit.R;
@@ -11,6 +12,7 @@ import com.phrase.bit.api.models.PhraseListModel;
 import com.phrase.bit.api.models.PhraseRootModel;
 import com.phrase.bit.ui.adapters.PhraseAdapter;
 import com.phrase.bit.ui.viewmodels.PhraseViewModel;
+import com.phrase.bit.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
         phraseService=((PhraseBitApp) getApplication()).getPhraseService();
 
 
+        if(Utils.isOnline(this))
         fetchPhrases();
+        else
+            Toast.makeText(this,"No internet detected",Toast.LENGTH_SHORT).show();
     }
 
     public void fetchPhrases()
@@ -52,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void success(PhraseListModel phraseListModel, Response response) {
 
-                final ArrayList<PhraseViewModel> phraseItems = new ArrayList<>();
                 for(String id:phraseListModel.getItems())
                 {
                     phraseService.GetPhrase(id, new Callback<PhraseRootModel>() {
@@ -63,10 +67,8 @@ public class MainActivity extends AppCompatActivity {
                             model.setKey(phraseRootModel.getModel().getKey());
                             model.setPhrase(phraseRootModel.getModel().getValue());
 
-                            phraseItems.add(model);
+                            phraseViewModelList.add(model);
 
-
-                            phraseViewModelList.addAll(phraseItems);
                             phraseAdapter.notifyDataSetChanged();
                         }
 
