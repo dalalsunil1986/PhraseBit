@@ -3,7 +3,7 @@ package com.phrase.bit.ui.viewmodels;
 /**
  * Created by Joel on 5/4/2016.
  */
-public class PhraseViewMvodel {
+public class PhraseViewModel {
     private String key;
     private String phrase;
 

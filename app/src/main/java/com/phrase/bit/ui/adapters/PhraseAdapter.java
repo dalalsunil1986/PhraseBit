@@ -8,22 +8,20 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.phrase.bit.R;
-import com.phrase.bit.ui.viewmodels.PhraseViewMvodel;
+import com.phrase.bit.ui.viewmodels.PhraseViewModel;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Joel on 5/4/2016.
  */
 public class PhraseAdapter extends BaseAdapter {
 
-    private List<PhraseViewMvodel> phrases;
+    private List<PhraseViewModel> phrases;
     private Context context;
 
-    public PhraseAdapter(Context context, List<PhraseViewMvodel> phrases) {
+    public PhraseAdapter(Context context, List<PhraseViewModel> phrases) {
         this.phrases = phrases;
         this.context = context;
     }
@@ -34,7 +32,7 @@ public class PhraseAdapter extends BaseAdapter {
     }
 
     @Override
-    public PhraseViewMvodel getItem(int position) {
+    public PhraseViewModel getItem(int position) {
         return phrases.get(position);
     }
 
@@ -46,7 +44,7 @@ public class PhraseAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        final PhraseViewMvodel item = getItem(position);
+        final PhraseViewModel item = getItem(position);
         ViewHolder holder;
 
         if (convertView == null) {
@@ -64,11 +62,10 @@ public class PhraseAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        @BindView(R.id.phrase)
         TextView phrase;
 
         ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+            phrase=(TextView)view.findViewById(R.id.phrase);
         }
     }
 }

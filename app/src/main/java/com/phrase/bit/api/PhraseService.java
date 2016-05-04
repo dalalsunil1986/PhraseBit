@@ -6,7 +6,6 @@ import com.phrase.bit.api.models.PhraseRootModel;
 import retrofit.Callback;
 import retrofit.http.EncodedPath;
 import retrofit.http.GET;
-import retrofit.http.Query;
 
 /**
  * Created by Joel on 5/4/2016.
