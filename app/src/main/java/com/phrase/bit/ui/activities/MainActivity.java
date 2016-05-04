@@ -2,6 +2,7 @@ package com.phrase.bit.ui.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,12 +18,15 @@ import com.phrase.bit.util.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.list)
     ListView list;
 
     private PhraseAdapter phraseAdapter;
@@ -33,57 +37,65 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        list = (ListView)findViewById(R.id.list);
 
-        phraseViewModelList=new ArrayList<>();
+        phraseViewModelList = new ArrayList<>();
 
-        phraseAdapter=new PhraseAdapter(this,phraseViewModelList);
+        phraseAdapter = new PhraseAdapter(this, phraseViewModelList);
 
         list.setAdapter(phraseAdapter);
 
-        phraseService=((PhraseBitApp) getApplication()).getPhraseService();
+        phraseService = ((PhraseBitApp) getApplication()).getPhraseService();
 
 
-        if(Utils.isOnline(this))
-        fetchPhrases();
+        if (Utils.isOnline(this))
+            fetchPhrases();
         else
-            Toast.makeText(this,"No internet detected",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No internet detected", Toast.LENGTH_SHORT).show();
     }
 
-    public void fetchPhrases()
-    {
+    public void fetchPhrases() {
         phraseService.GetPhraseIds(new Callback<PhraseListModel>() {
             @Override
             public void success(PhraseListModel phraseListModel, Response response) {
 
-                for(String id:phraseListModel.getItems())
+                if (!phraseListModel.getItems().isEmpty()) {
+
+
+                    for (String id : phraseListModel.getItems()) {
+                        phraseService.GetPhrase(id, new Callback<PhraseRootModel>() {
+                            @Override
+                            public void success(PhraseRootModel phraseRootModel, Response response) {
+
+                                PhraseViewModel model = new PhraseViewModel();
+                                model.setKey(phraseRootModel.getModel().getKey());
+                                model.setPhrase(phraseRootModel.getModel().getValue());
+
+                                phraseViewModelList.add(model);
+
+                                phraseAdapter.notifyDataSetChanged();
+                                list.smoothScrollToPosition(phraseViewModelList.size());
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                else
                 {
-                    phraseService.GetPhrase(id, new Callback<PhraseRootModel>() {
-                        @Override
-                        public void success(PhraseRootModel phraseRootModel, Response response) {
-
-                            PhraseViewModel model = new PhraseViewModel();
-                            model.setKey(phraseRootModel.getModel().getKey());
-                            model.setPhrase(phraseRootModel.getModel().getValue());
-
-                            phraseViewModelList.add(model);
-
-                            phraseAdapter.notifyDataSetChanged();
-                            list.smoothScrollToPosition(phraseViewModelList.size());
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-
-                        }
-                    });
+                    Toast.makeText(MainActivity.this,"No items are in the list",Toast.LENGTH_SHORT).show();
                 }
 
             }
 
             @Override
             public void failure(RetrofitError error) {
+                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+
 
             }
         });

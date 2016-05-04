@@ -12,6 +12,9 @@ import com.phrase.bit.ui.viewmodels.PhraseViewModel;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 /**
  * Created by Joel on 5/4/2016.
@@ -61,11 +64,13 @@ public class PhraseAdapter extends BaseAdapter {
         return convertView;
     }
 
+
     static class ViewHolder {
+        @BindView(R.id.phrase)
         TextView phrase;
 
         ViewHolder(View view) {
-            phrase=(TextView)view.findViewById(R.id.phrase);
+            ButterKnife.bind(this, view);
         }
     }
 }

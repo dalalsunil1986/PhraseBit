@@ -9,6 +9,9 @@ import retrofit.http.GET;
 
 /**
  * Created by Joel on 5/4/2016.
+ *
+ * Interface that turns these methods into a HTTP API
+ * using Retrofit
  */
 public interface PhraseService {
 
