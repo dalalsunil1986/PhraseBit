@@ -27,7 +27,7 @@ public class PhraseBitApp extends Application {
     /**
      * The RestAdapter generates an implementation of the PhraseService interface.
      * It uses the Simple XML Converter so that that the XML being returned can be
-     * converted to strong typed models as defined by the methods of the PhraseService.
+     * converted to strongly typed models as defined by the methods of the PhraseService.
      */
 
     public PhraseService generatePhraseService() {
@@ -35,7 +35,7 @@ public class PhraseBitApp extends Application {
 
         /*
         * The http client was timing out due to so many consecutive calls to fetch phrases
-        * so I increased the timeout.
+        * so I increased the timeout limit.
         * */
         okHttpClient.setReadTimeout(60, TimeUnit.SECONDS);
         okHttpClient.setConnectTimeout(60, TimeUnit.SECONDS);
