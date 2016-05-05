@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-            fetchPhrases();
+        fetchPhrases();
     }
 
     /*
@@ -109,12 +109,11 @@ public class MainActivity extends AppCompatActivity {
         /**
          * Check to ensure internet connectivity is available before making call to API.
          * */
-        if (!Utils.isOnline(this))
-        {
+        if (!Utils.isOnline(this)) {
             Toast.makeText(this, "No internet detected", Toast.LENGTH_SHORT).show();
 
-            if(progressWheel.isSpinning())
-            progressWheel.stopSpinning();
+            if (progressWheel.isSpinning())
+                progressWheel.stopSpinning();
 
             if (swipeContainer.isRefreshing())
                 swipeContainer.setRefreshing(false);
@@ -152,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                                 * */
                                 if (phraseListModel.getItems().indexOf(id) == phraseListModel.getItems().size() - 1) {
 
-                                    if(progressWheel.isSpinning())
+                                    if (progressWheel.isSpinning())
                                         progressWheel.stopSpinning();
 
                                     if (swipeContainer.isRefreshing())
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void failure(RetrofitError error) {
-                                if(progressWheel.isSpinning())
+                                if (progressWheel.isSpinning())
                                     progressWheel.stopSpinning();
 
                                 if (swipeContainer.isRefreshing())
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    if(progressWheel.isSpinning())
+                    if (progressWheel.isSpinning())
                         progressWheel.stopSpinning();
 
                     if (swipeContainer.isRefreshing())
@@ -189,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                if(progressWheel.isSpinning())
+                if (progressWheel.isSpinning())
                     progressWheel.stopSpinning();
 
                 if (swipeContainer.isRefreshing())
