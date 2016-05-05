@@ -29,6 +29,10 @@ import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Uses the ButterKnife plugin by Jake Wharton to bind views so that calls
+     * to findViewById aren't necessary to clutter code.
+     */
     @BindView(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
     @BindView(R.id.list)
