@@ -1,7 +1,7 @@
 # Phrase Bit
 Awesome Phrases!
 
-An app that shows you a list of awesome phrases that are interesting enough to brighten your day.
+An app that shows you a list of awesome phrases that will brighten your day.
 
 ##### Libraries/Components used
 
