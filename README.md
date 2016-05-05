@@ -9,5 +9,6 @@ An app that shows you a list of awesome phrases that will brighten your day.
 * Swipe To Refresh Layout - to refresh datasource.
 * Simple XML - to assist in parsing XML from web service.
 * Materialish Progress Bar - for a clean progress circle.
-* Retrofit - HttpClient that makes calling to web services cooler. :) 
+* Android Asset Studio - to make a cool launcher icon.
+* Retrofit - HttpClient that makes calling to web services cooler :) 
 
