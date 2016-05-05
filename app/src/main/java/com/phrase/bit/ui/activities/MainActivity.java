@@ -94,17 +94,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        if (Utils.isOnline(this))
             fetchPhrases();
-        else
-            Toast.makeText(this, "No internet detected", Toast.LENGTH_SHORT).show();
     }
 
     /*
     * Makes the call to the Phrases API and returns a strongly typed list of the ids of the phrases.
     * */
     public void fetchPhrases() {
+
+        /**
+         * Check to ensure internet connectivity is available before making call to API.
+         * */
+        if (!Utils.isOnline(this))
+        {
+            Toast.makeText(this, "No internet detected", Toast.LENGTH_SHORT).show();
+
+            if(progressWheel.isSpinning())
+            progressWheel.stopSpinning();
+
+            if (swipeContainer.isRefreshing())
+                swipeContainer.setRefreshing(false);
+
+            return;
+        }
+
         progressWheel.spin();
         phraseService.GetPhraseIds(new Callback<PhraseListModel>() {
             @Override
@@ -135,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
                                 * */
                                 if (phraseListModel.getItems().indexOf(id) == phraseListModel.getItems().size() - 1) {
 
-                                    progressWheel.stopSpinning();
+                                    if(progressWheel.isSpinning())
+                                        progressWheel.stopSpinning();
 
                                     if (swipeContainer.isRefreshing())
                                         swipeContainer.setRefreshing(false);
@@ -145,7 +159,8 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void failure(RetrofitError error) {
-                                progressWheel.stopSpinning();
+                                if(progressWheel.isSpinning())
+                                    progressWheel.stopSpinning();
 
                                 if (swipeContainer.isRefreshing())
                                     swipeContainer.setRefreshing(false);
@@ -157,7 +172,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    progressWheel.stopSpinning();
+                    if(progressWheel.isSpinning())
+                        progressWheel.stopSpinning();
 
                     if (swipeContainer.isRefreshing())
                         swipeContainer.setRefreshing(false);
@@ -169,7 +185,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                progressWheel.stopSpinning();
+                if(progressWheel.isSpinning())
+                    progressWheel.stopSpinning();
 
                 if (swipeContainer.isRefreshing())
                     swipeContainer.setRefreshing(false);
